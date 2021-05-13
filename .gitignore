@@ -105,3 +105,6 @@ dist
 
 # certs
 certs/
+
+# uploads folder
+uploads/
