@@ -1,6 +1,5 @@
 'use strict'
-
-const upload_pic = require('./fs_controller.js').upload;
+const fs = require('fs')
 
 const post_picture = (req, res) => {
   try{
@@ -10,16 +9,19 @@ const post_picture = (req, res) => {
     console.log('pic posting failed!');
   };
 }
-/*
-app.post('/post/picture', upload.single('image'), (req, res, next) => {
 
-    //handle the pic data
-    console.log("new image posted succesfully");
-    res.json({message:'Upload successful'})
-});
-*/
+// exact pathing here to be modified..
 const get_picture = async (req, res) => {
   try{
+    const file_path = req.body.target_file;
+    const full_path = __dirname + "/../uploads/potato_field/" + file_path;
+
+    if(fs.existsSync(full_path)){
+      res.setHeader('Content-Type', 'image/jpeg');
+      res.sendFile(file_path, {root:__dirname+"/../uploads/potato_field/"})
+    }else{
+      console.log("no such file found.");
+    }
     console.log('getting a picture!');
   }catch(err){
     console.log('error getting a picture');
