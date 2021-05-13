@@ -6,7 +6,6 @@ const https = require('https');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const spawn = require('child_process').spawn;
-const multer = require('multer');
 const authenticator = require('./security/authenticator.js').authenticate;
 const PORT = process.env.PORT;
 
@@ -31,7 +30,7 @@ app.use('/auth_pipeline', auth_route);
 // configure https server
 const https_server = https.createServer(options, app);
 
-app.listen(PORT, () => {
+https_server.listen(PORT, () => {
   console.log(`server listening on port ${PORT} ...`);
 })
 

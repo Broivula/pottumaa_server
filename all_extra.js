@@ -11,27 +11,6 @@ const ip_data = {
    ip: process.env.IP
 };
 */
-const storage = multer.diskStorage({
-    destination:  (req, file, cb) => {
-
-        // so this is where we save the image data
-        // first we need to check if a folder with the current date format already exists
-	console.log(req.body.folder)
-        if(!fs.existsSync(req.body.folder)){
-            fs.mkdirSync(req.body.folder)
-        }
-        cb(null, req.body.folder)
-    },
-
-    filename: (req, file, cb) => {
-
-        // now we name the incoming picture file of the potato field
-        console.log(file.originalname);
-        cb(null, file.originalname)
-    }
-});
-
-const upload = multer({storage: storage});
 
 
 app.use(function(req, res, next)
@@ -61,12 +40,6 @@ app.get('/get/history/images/:dest', (req, res) =>{
     res.sendFile(req.params.dest, {root:__dirname + "/uploads/" + fulldate});
 });
 
-app.post('/post/picture', upload.single('image'), (req, res, next) => {
-
-    //handle the pic data
-    console.log("new image posted succesfully");
-    res.json({message:'Upload successful'})
-});
 
 app.get('/get/potatoImages', (req, res) => {
     var folderPath = 'uploads/potato_field/';
