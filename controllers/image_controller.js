@@ -13,8 +13,10 @@ const post_picture = (req, res) => {
 // exact pathing here to be modified..
 const get_single_picture = async (req, res) => {
   try{
-    const file_path = req.params.path;
+    const file_path = req.params.path.replace(/!/g, "/");
     const full_path = __dirname + "/../uploads/potato_field/" + file_path;
+    console.log("fetching a single picture.");
+    console.log(file_path);
 
     if(fs.existsSync(full_path)){
       res.setHeader('Content-Type', 'image/jpeg');
