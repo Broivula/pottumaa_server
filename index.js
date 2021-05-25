@@ -7,7 +7,11 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const spawn = require('child_process').spawn;
 const authenticator = require('./security/authenticator.js').authenticate;
+const socket_controller = require('./controllers/socket_controller');
 const PORT = process.env.PORT;
+const SOCKET_PORT = process.env.SOCKET_PORT;
+const net = require('net');
+
 
 const image_route = require('./routes/image_router.js');
 const auth_route = require('./routes/sec_router.js');
@@ -41,7 +45,33 @@ app.use('/auth_pipeline', auth_route);
 // configure https server
 const https_server = https.createServer(options, app);
 
+
+const socket_server = net.createServer({allowHalfOpen: true});
+
+https_server.on('connection', (socket) => {
+  socket.setEncoding('utf-8');
+  console.log('receiving connection!');
+
+  socket.on('data', (data) => {
+    if(data.length > 5){
+      try{
+        socket_controller.handleIncomingSocketData(data)
+
+      }catch (err){
+        console.log('error handling incoming socket data.');
+        console.log('received data:');
+        console.log(data.toString());
+      }
+    }
+  })
+})
+
 https_server.listen(PORT, () => {
   console.log(`server listening on port ${PORT} ...`);
 })
 
+/*
+socket_server.listen(SOCKET_PORT, () => {
+  console.log('socket server listening.');
+})
+*/
