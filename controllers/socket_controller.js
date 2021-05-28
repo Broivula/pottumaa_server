@@ -3,7 +3,7 @@
 
 const sendDataToClient = (client, data) => {
   const stringifiedMsg = JSON.stringify(data.msg);
-  client.socket.write(`${data}\n`) ? console.log('data sent successfully') : client.socket.pause();
+  client.write(`${data}\n`) ? console.log('data sent successfully') : client.socket.pause();
 };
 
 const handleIncomingSocketData = (socket, data) => {
