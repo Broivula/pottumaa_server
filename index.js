@@ -6,15 +6,15 @@ const https = require('https');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const spawn = require('child_process').spawn;
-const authenticator = require('./security/authenticator.js').authenticate;
-const socket_controller = require('./controllers/socket_controller');
 const PORT = process.env.PORT;
 const SOCKET_PORT = process.env.SOCKET_PORT;
 const tls = require('tls');
 
-
+const authenticator = require('./security/authenticator.js').authenticate;
+const socket_handler = require('./controllers/socket_handler').socket_handler;
 const image_route = require('./routes/image_router.js');
 const auth_route = require('./routes/sec_router.js');
+const test_route = require('./routes/test_route.js');
 
 // configure certs
 const options = {
@@ -41,49 +41,15 @@ app.use(function(req, res, next)
 
 // configure routing
 app.use('/image', authenticator, image_route);
+app.use('/test', test_route);
 app.use('/auth_pipeline', auth_route);
 
 // configure https server
 const https_server = https.createServer(options, app);
 
 
-const socket_server = tls.createServer(options, (socket) => {
-  socket.on('data', (data) => {
-  console.log(data);
-    if(data.length > 5){
-      try{
-        socket_controller.handleIncomingSocketData(data);
+const socket_server = tls.createServer(options, socket_handler);
 
-      }catch (err){
-        console.log('error handling incoming socket data.');
-        console.log('received data:');
-        console.log(data.toString());
-      }
-    }
-  })
-});
-
-
-/*
-socket_server.on('connection', (socket) => {
-  socket.setEncoding('utf-8');
-  console.log('receiving connection!');
-
-  socket.on('data', (data) => {
-  console.log(data);
-    if(data.length > 5){
-      try{
-        socket_controller.handleIncomingSocketData(data);
-
-      }catch (err){
-        console.log('error handling incoming socket data.');
-        console.log('received data:');
-        console.log(data.toString());
-      }
-    }
-  })
-})
-*/
 
 https_server.listen(PORT, () => {
   console.log(`server listening on port ${PORT} ...`);
