@@ -47,7 +47,7 @@ app.use('/auth_pipeline', auth_route);
 // configure https server
 const https_server = https.createServer(options, app);
 
-
+options.allowHalfOpen = true;
 const socket_server = tls.createServer(options, socket_handler);
 
 

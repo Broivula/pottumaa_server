@@ -16,6 +16,8 @@ const sendDataToClient = (client, data) => {
 
 // cam = 1, phone = 0
 const assign_client = (socket, client) => {
+  // set the socket timeout here to 0
+  socket.setTimeout(0);
   client == 1 ? clients[1] = socket : clients[0] = socket;
 }
 
